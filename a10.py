@@ -111,6 +111,23 @@ def get_birth_date(name: str) -> str:
 
     return match.group("birth")
 
+def get_draft_year(name: str) -> str:
+    """Gets draft year date of the given person
+
+    Args:
+        name - name of the person
+
+    Returns:
+        draft year date of the given person
+    """
+    infobox_text = clean_text(get_first_infobox_text(get_page_html(name)))
+    pattern = r"(?:NBA draft\D*)(?P<draft>[\d]+)"
+    error_text = (
+        "Page infobox has no draft year information"
+    )
+    match = get_match(infobox_text, pattern, error_text)
+
+    return match.group("draft")
 
 # below are a set of actions. Each takes a list argument and returns a list of answers
 # according to the action and the argument. It is important that each function returns a
@@ -184,7 +201,7 @@ def search_pa_list(src: List[str]) -> List[str]:
 def query_loop() -> None:
     """The simple query loop. The try/except structure is to catch Ctrl-C or Ctrl-D
     characters and exit gracefully"""
-    print("Welcome to the movie database!\n")
+    print("Welcome to the Wikipedia database!\n")
     while True:
         try:
             print()
