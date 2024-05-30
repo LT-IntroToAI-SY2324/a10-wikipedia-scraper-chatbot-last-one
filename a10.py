@@ -129,6 +129,56 @@ def get_draft_year(name: str) -> str:
 
     return match.group("draft")
 
+def get_state_capital(capital_name: str) -> str:
+    """gets the state capital
+
+    Args:
+        capital_name - name of the capital in the state
+
+    Returns:
+        name of state capital
+    """
+    infobox_text = clean_text(get_first_infobox_text(get_page_html(capital_name)))
+    # pattern = r"(?:Capital.*?)(?: ?[\d]+ )?(?P<capital>[\d,.]+)(?:.*?)km"
+    # pattern = re.compile("Capital (\w+)", re.IGNORECASE)
+    pattern = r"(?:Capital\D*)(?P<capital>[\d]+)"
+    error_text = "Page infobox has no information"
+    match = get_match(infobox_text, pattern, error_text)
+
+    return match.group("capital")
+
+def get_party(capital_name: str) -> str:
+    """gets the political party of person
+
+    Args:
+        party_name - name of political party
+
+    Returns:
+        name of political party
+    """
+    infobox_text = clean_text(get_first_infobox_text(get_page_html(capital_name)))
+    pattern = r"(?:Political Party\D*)(?P<politcal party>[\d]+)"
+    error_text = "Page infobox has no information"
+    match = get_match(infobox_text, pattern, error_text)
+
+    return match.group("political party")
+
+def get_volc_loc(capital_name: str) -> str:
+    """gets the volcano location
+
+    Args:
+        loc_name - location of volcano
+
+    Returns:
+        location of volcano
+    """
+    infobox_text = clean_text(get_first_infobox_text(get_page_html(capital_name)))
+    pattern = r"(?:Location\s*)(?P<location>[\w]+)"
+    error_text = "Page infobox has no information"
+    match = get_match(infobox_text, pattern, error_text)
+
+    return match.group("location")
+
 # below are a set of actions. Each takes a list argument and returns a list of answers
 # according to the action and the argument. It is important that each function returns a
 # list of the answer(s) and not just the answer itself.
@@ -145,6 +195,16 @@ def birth_date(matches: List[str]) -> List[str]:
     """
     return [get_birth_date(" ".join(matches))]
 
+def state_capital(matches: List[str]) -> List[str]:
+    """Returns state capital in matches
+
+    Args:
+        matches - match from pattern of state capital
+
+    Returns:
+        name of state capital
+    """
+    return [get_state_capital(" ".join(matches))]
 
 def polar_radius(matches: List[str]) -> List[str]:
     """Returns polar radius of planet in matches
@@ -157,6 +217,27 @@ def polar_radius(matches: List[str]) -> List[str]:
     """
     return [get_polar_radius(matches[0])]
 
+def volcano_location(matches: List[str]) -> List[str]:
+    """Returns state capital in matches
+
+    Args:
+        matches - match from pattern of state capital
+
+    Returns:
+        name of state capital
+    """
+    return [get_volc_loc(" ".join(matches))]
+
+def political_party(matches: List[str]) -> List[str]:
+    """Returns state capital in matches
+
+    Args:
+        matches - match from pattern of state capital
+
+    Returns:
+        name of state capital
+    """
+    return [get_party(" ".join(matches))]
 
 # dummy argument is ignored and doesn't matter
 def bye_action(dummy: List[str]) -> None:
@@ -172,7 +253,12 @@ Action = Callable[[List[str]], List[Any]]
 # here, after all of the function definitions
 pa_list: List[Tuple[Pattern, Action]] = [
     ("when was % born".split(), birth_date),
+    ("what is %'s birth date".split(), birth_date),
     ("what is the polar radius of %".split(), polar_radius),
+    ("polar radius of %".split(), polar_radius),
+    ("what is the capital of %".split(), state_capital),
+    ("where is % located".split(), volcano_location),
+    ("what is the party of %".split(), political_party),
     (["bye"], bye_action),
 ]
 
