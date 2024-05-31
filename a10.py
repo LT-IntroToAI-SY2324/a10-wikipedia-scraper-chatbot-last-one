@@ -141,7 +141,7 @@ def get_state_capital(capital_name: str) -> str:
     infobox_text = clean_text(get_first_infobox_text(get_page_html(capital_name)))
     # pattern = r"(?:Capital.*?)(?: ?[\d]+ )?(?P<capital>[\d,.]+)(?:.*?)km"
     # pattern = re.compile("Capital (\w+)", re.IGNORECASE)
-    pattern = r"(?:Capital\D*)(?P<capital>[\d]+)"
+    pattern = r"(?:Capital.*)(?P<capital>[\w]+)"
     error_text = "Page infobox has no information"
     match = get_match(infobox_text, pattern, error_text)
 
@@ -157,11 +157,11 @@ def get_party(capital_name: str) -> str:
         name of political party
     """
     infobox_text = clean_text(get_first_infobox_text(get_page_html(capital_name)))
-    pattern = r"(?:Political Party\D*)(?P<politcal party>[\d]+)"
+    pattern = r"(?:Political party\s*)(?P<party>[\w]+)"
     error_text = "Page infobox has no information"
     match = get_match(infobox_text, pattern, error_text)
 
-    return match.group("political party")
+    return match.group("party")
 
 def get_volc_loc(capital_name: str) -> str:
     """gets the volcano location
