@@ -139,12 +139,13 @@ def get_state_capital(capital_name: str) -> str:
         name of state capital
     """
     infobox_text = clean_text(get_first_infobox_text(get_page_html(capital_name)))
-    # pattern = r"(?:Capital.*?)(?: ?[\d]+ )?(?P<capital>[\d,.]+)(?:.*?)km"
-    # pattern = re.compile("Capital (\w+)", re.IGNORECASE)
-    pattern = r"(?:Capital.*)(?P<capital>[\w]+)"
+    print(infobox_text)
+    pattern = r"(?:Capital\(and largest city\))(?P<capital>[\w]+)"
     error_text = "Page infobox has no information"
     match = get_match(infobox_text, pattern, error_text)
-
+    # if not match:
+    #     pattern = r"(?:Capital)(?P<capital>[\w]+)"
+    #     match = get_match(infobox_text, pattern, error_text)
     return match.group("capital")
 
 def get_party(capital_name: str) -> str:
